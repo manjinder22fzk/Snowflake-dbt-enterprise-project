@@ -1,0 +1,20 @@
+config-version: 2
+
+schemachange:
+  root-folder: "./schemachange/changes"
+  modules-folder: "./schemachange/modules"
+
+  change-history-table: "RAW_PRD.SCHEMACHANGE.CHANGE_HISTORY"
+  create-change-history-table: true
+  autocommit: true
+
+  query-tag: "snowflake-dbt-medallion;env=prd"
+  log-level: "INFO"
+
+snowflake:
+  account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+  user: "{{ env_var('SNOWFLAKE_USER') }}"
+  role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+  warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+  database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+  authenticator: "snowflake"

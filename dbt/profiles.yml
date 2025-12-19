@@ -1,26 +1,24 @@
 enterprise_medallion:
-  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  target: dev
   outputs:
     dev:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USER') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-      role: "ROLE_TRANSFORM_DEV"
-      warehouse: "WH_TRANSFORM_DEV"
+      role: "R_DEV_TRANSFORM"
+      warehouse: "WH_DEV_DBT_S"
       database: "ANALYTICS_DEV"
       schema: "SILVER"
       threads: 4
-      client_session_keep_alive: false
 
     prod:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USER') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-      role: "ROLE_TRANSFORM_PROD"
-      warehouse: "WH_TRANSFORM_PROD"
-      database: "ANALYTICS_PROD"
+      role: "R_PRD_TRANSFORM"
+      warehouse: "WH_PRD_DBT_S"
+      database: "ANALYTICS_PRD"
       schema: "SILVER"
       threads: 4
-      client_session_keep_alive: false

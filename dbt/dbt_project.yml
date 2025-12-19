@@ -1,0 +1,30 @@
+name: enterprise_medallion
+version: 1.0.0
+config-version: 2
+
+profile: enterprise_medallion
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+analysis-paths: ["analysis"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+models:
+  enterprise_medallion:
+    +materialized: view
+    silver:
+      +schema: SILVER
+      +materialized: view
+    gold:
+      +schema: GOLD
+      +materialized: table
+      dimensions:
+        +materialized: table
+      facts:
+        +materialized: incremental
+        +incremental_strategy: merge
+        +unique_key: order_id

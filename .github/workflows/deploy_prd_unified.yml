@@ -1,0 +1,82 @@
+name: Deploy PRD (Terraform + SchemaChange + dbt)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy_prd:
+    runs-on: ubuntu-latest
+    environment: prd
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ----------------------------
+      # 1) Terraform apply PRD
+      # ----------------------------
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform init (PRD)
+        working-directory: infra/terraform/envs/prd
+        env:
+          TF_VAR_snowflake_org:      ${{ secrets.SNOWFLAKE_ORG_PRD }}
+          TF_VAR_snowflake_account:  ${{ secrets.SNOWFLAKE_ACCOUNT_PRD }}
+          TF_VAR_snowflake_user:     ${{ secrets.SNOWFLAKE_USER_PRD }}
+          TF_VAR_snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD_PRD }}
+        run: terraform init
+
+      - name: Terraform apply (PRD)
+        working-directory: infra/terraform/envs/prd
+        env:
+          TF_VAR_snowflake_org:      ${{ secrets.SNOWFLAKE_ORG_PRD }}
+          TF_VAR_snowflake_account:  ${{ secrets.SNOWFLAKE_ACCOUNT_PRD }}
+          TF_VAR_snowflake_user:     ${{ secrets.SNOWFLAKE_USER_PRD }}
+          TF_VAR_snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD_PRD }}
+        run: terraform apply -auto-approve -var-file="prd.tfvars"
+
+      # ----------------------------
+      # 2) SchemaChange deploy PRD
+      # ----------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install schemachange + dbt
+        run: |
+          python -m pip install --upgrade pip
+          pip install schemachange
+          pip install dbt-snowflake==1.8.0
+
+      - name: SchemaChange deploy (PRD)
+        env:
+          SNOWFLAKE_ACCOUNT:   ${{ secrets.SNOWFLAKE_ACCOUNT_PRD }}
+          SNOWFLAKE_USER:      ${{ secrets.SNOWFLAKE_USER_PRD }}
+          SNOWFLAKE_PASSWORD:  ${{ secrets.SNOWFLAKE_PASSWORD_PRD }}
+          SNOWFLAKE_ROLE:      ${{ secrets.SNOWFLAKE_ROLE_PRD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE_PRD }}
+          SNOWFLAKE_DATABASE:  ${{ secrets.SNOWFLAKE_DATABASE_PRD }}
+        run: |
+          schemachange deploy --config-folder ./schemachange/config --config-file-name config-prd.yml
+
+      # ----------------------------
+      # 3) dbt build PRD
+      # ----------------------------
+      - name: dbt deps
+        working-directory: dbt
+        run: dbt deps
+
+      - name: dbt build (PRD)
+        working-directory: dbt
+        env:
+          SNOWFLAKE_ACCOUNT:  ${{ secrets.SNOWFLAKE_ACCOUNT_PRD }}
+          SNOWFLAKE_USER:     ${{ secrets.SNOWFLAKE_USER_PRD }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD_PRD }}
+          DBT_TARGET: prod
+        run: dbt build --target prod

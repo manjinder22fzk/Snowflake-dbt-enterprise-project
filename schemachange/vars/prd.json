@@ -1,0 +1,15 @@
+{
+  "env": "PRD",
+  "deploy_role": "ACCOUNTADMIN",
+  "raw_db": "RAW_PRD",
+  "analytics_db": "ANALYTICS_PRD",
+  "load_wh": "WH_PRD_LOAD_XS",
+  "dbt_wh": "WH_PRD_DBT_S",
+  "bi_wh": "WH_PRD_BI_XS",
+  "landing_schema": "LANDING",
+  "bronze_schema": "BRONZE",
+  "util_schema": "UTIL",
+  "security_schema": "SECURITY",
+  "stage_name": "STG_CSV_LANDING",
+  "file_format_name": "FF_CSV_STANDARD"
+}

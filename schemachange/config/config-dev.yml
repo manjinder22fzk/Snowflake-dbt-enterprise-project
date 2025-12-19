@@ -1,0 +1,25 @@
+config-version: 2
+
+schemachange:
+  root-folder: "./schemachange/changes"
+  modules-folder: "./schemachange/modules"     # keep even if empty (future-proof)
+
+  change-history-table: "RAW_DEV.SCHEMACHANGE.CHANGE_HISTORY"
+  create-change-history-table: true
+  autocommit: true
+
+  # makes Snowflake query history easy to filter during deployments
+  query-tag: "snowflake-dbt-medallion;env=dev"
+
+  log-level: "INFO"
+
+snowflake:
+  # non-secret values are fine in repo
+  account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+  user: "{{ env_var('SNOWFLAKE_USER') }}"
+  role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+  warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+  database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+
+  # password MUST stay out of git → pass via env var
+  authenticator: "snowflake"

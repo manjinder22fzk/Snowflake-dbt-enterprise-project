@@ -1,0 +1,4 @@
+customer_id,first_name,last_name,email,phone,country,created_at,updated_at,is_deleted
+1002,Harpreet,Kaur,harpreet.kaur@example.com,+1-647-555-9999,CA,2025-12-02 12:00:00,2025-12-10 10:10:00,false
+1004,Simran,Gill,simran.gill@example.com,+1-289-555-0104,CA,2025-12-04 08:15:00,2025-12-10 10:12:00,true
+1006,Mehak,Sidhu,mehak.sidhu@example.com,+1-416-555-0106,CA,2025-12-10 10:15:00,2025-12-10 10:15:00,false

@@ -1,0 +1,6 @@
+product_id,product_name,category,price,created_at,updated_at,is_active
+2001,Starter Plan,Subscription,19.00,2025-12-01 00:00:00,2025-12-01 00:00:00,true
+2002,Growth Plan,Subscription,49.00,2025-12-01 00:00:00,2025-12-01 00:00:00,true
+2003,Pro Plan,Subscription,99.00,2025-12-01 00:00:00,2025-12-01 00:00:00,true
+2004,Onboarding Fee,Service,199.00,2025-12-01 00:00:00,2025-12-01 00:00:00,true
+2005,Priority Support,Service,29.00,2025-12-01 00:00:00,2025-12-01 00:00:00,true

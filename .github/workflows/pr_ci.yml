@@ -1,0 +1,49 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: [ "dev", "main" ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dbt
+        run: |
+          python -m pip install --upgrade pip
+          pip install dbt-snowflake==1.8.0
+
+      - name: Install dbt deps
+        working-directory: dbt
+        run: dbt deps
+
+      # Optional: validate terraform formatting
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform fmt check
+        working-directory: infra/terraform
+        run: terraform fmt -check -recursive
+
+      # dbt compile only (no Snowflake creds needed)
+      - name: dbt compile
+        working-directory: dbt
+        env:
+          DBT_TARGET: dev
+          # profile uses env vars; compile doesn't need actual connection if models are valid,
+          # but some macros can require connection — if that happens we’ll switch to dbt parse
+          SNOWFLAKE_ACCOUNT: "dummy"
+          SNOWFLAKE_USER: "dummy"
+          SNOWFLAKE_PASSWORD: "dummy"
+        run: dbt compile

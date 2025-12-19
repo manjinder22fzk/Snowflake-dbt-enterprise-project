@@ -1,0 +1,3 @@
+order_id,customer_id,order_ts,status,currency,created_at,updated_at,is_deleted
+3001,1001,2025-12-06 10:00:00,paid,CAD,2025-12-06 10:00:00,2025-12-10 11:00:00,false
+3006,1006,2025-12-10 11:05:00,placed,CAD,2025-12-10 11:05:00,2025-12-10 11:05:00,false

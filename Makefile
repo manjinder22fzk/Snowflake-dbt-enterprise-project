@@ -31,3 +31,6 @@ tf-plan-dev:
 
 tf-apply-dev:
 	cd infra/terraform/envs/dev && terraform apply -auto-approve
+
+$env:TF_VAR_snowflake_user="MANJINDERSINGHFZK"
+$env:TF_VAR_snowflake_password="Engineering96@"

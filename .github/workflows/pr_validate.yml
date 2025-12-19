@@ -1,0 +1,57 @@
+name: PR Validate (Terraform + SchemaChange + dbt)
+
+on:
+  pull_request:
+    branches: ["dev", "main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+        working-directory: infra/terraform
+
+      - name: Terraform validate (DEV env)
+        working-directory: infra/terraform/envs/dev
+        run: |
+          terraform init -backend=false
+          terraform validate
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install schemachange + dbt
+        run: |
+          python -m pip install --upgrade pip
+          pip install schemachange
+          pip install dbt-snowflake==1.8.0
+
+      - name: Basic schemachange config check
+        run: |
+          test -f schemachange/config/config-dev.yml
+          test -d schemachange/changes
+          schemachange --help
+
+      - name: dbt deps
+        working-directory: dbt
+        run: dbt deps
+
+      - name: dbt compile
+        working-directory: dbt
+        env:
+          # compile can work without live connection in most cases
+          SNOWFLAKE_ACCOUNT: "dummy"
+          SNOWFLAKE_USER: "dummy"
+          SNOWFLAKE_PASSWORD: "dummy"
+        run: dbt compile

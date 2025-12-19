@@ -1,0 +1,2 @@
+order_item_id,order_id,product_id,quantity,unit_price,created_at,updated_at
+4006,3006,2002,1,49.00,2025-12-10 11:05:00,2025-12-10 11:05:00

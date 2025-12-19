@@ -1,0 +1,36 @@
+
+
+terraform init
+terraform fmt -recursive
+terraform plan -var-file="dev.tfvars"
+terraform apply -var-file="dev.tfvars"
+
+
+snow sql -c money -f scripts/grant_my_user_role.sql
+
+
+
+-- Order of execution
+
+snow sql -c money -f ingest/sql/01_file_formats.sql
+snow sql -c money -f ingest/sql/02_stages.sql
+snow sql -c money -f ingest/sql/03_bronze_tables.sql
+powershell  -File scripts\upload_csv_to_stage.ps1
+snow sql -c money -f ingest/sql/04_copy_into.sql
+
+snow sql -c money -f ingest/sql/05_control_tables.sql
+snow sql -c money -f ingest/sql/06_streams.sql
+
+snow sql -c money -f ingest/sql/07a_proc_load_customers.sql
+snow sql -c money -f ingest/sql/07a_task_load_customers.sql
+
+snow sql -c money -f ingest/sql/07b_proc_load_products.sql
+snow sql -c money -f ingest/sql/07b_task_load_products.sql
+
+snow sql -c money -f ingest/sql/07c_proc_load_orders.sql
+snow sql -c money -f ingest/sql/07c_task_load_orders.sql
+
+snow sql -c money -f ingest/sql/07d_proc_load_order_items.sql
+snow sql -c money -f ingest/sql/07d_task_load_order_items.sql
+
+snow sql -c money -f ingest/sql/08_enable_tasks.sql

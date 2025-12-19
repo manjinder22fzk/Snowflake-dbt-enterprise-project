@@ -1,0 +1,13 @@
+USE ROLE R_DEV_INGEST;
+USE WAREHOUSE WH_DEV_LOAD_XS;
+USE DATABASE RAW_DEV;
+USE SCHEMA LANDING;
+
+-- Internal stage (Snowflake-managed)
+CREATE OR REPLACE STAGE STG_CSV_LANDING
+  FILE_FORMAT = FF_CSV_STANDARD;
+
+-- Optional: keep each dataset under its own folder path:
+-- @RAW_DEV.LANDING.STG_CSV_LANDING/customers/
+-- @RAW_DEV.LANDING.STG_CSV_LANDING/orders/
+-- etc.

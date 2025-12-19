@@ -1,0 +1,14 @@
+USE ROLE {{ deploy_role }};
+USE WAREHOUSE {{ load_wh }};
+USE DATABASE {{ raw_db }};
+USE SCHEMA {{ landing_schema }};
+
+CREATE OR REPLACE FILE FORMAT {{ file_format_name }}
+  TYPE = CSV
+  FIELD_DELIMITER = ','
+  SKIP_HEADER = 1
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+  TRIM_SPACE = TRUE
+  NULL_IF = ('', 'NULL', 'null')
+  EMPTY_FIELD_AS_NULL = TRUE
+  ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE;

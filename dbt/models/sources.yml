@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: raw_dev
+    database: RAW_DEV
+    schema: BRONZE
+    tables:
+      - name: customers_bronze
+        columns:
+          - name: customer_id
+            tests: [not_null]
+      - name: products_bronze
+        columns:
+          - name: product_id
+            tests: [not_null]
+      - name: orders_bronze
+        columns:
+          - name: order_id
+            tests: [not_null]
+      - name: order_items_bronze
+        columns:
+          - name: order_item_id
+            tests: [not_null]
